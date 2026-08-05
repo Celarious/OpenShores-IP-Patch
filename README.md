@@ -5,4 +5,4 @@ The majority of the work is done in ASM client patches and Redirect.dll (built f
 
 The plan is to ideally move the ASM code to our own separate custom DLL, however that requires matching the build toolchain first.
 
-To use the xdelta file, simply apply it to Deantwo's original 2022 SoH .exe
+To use the xdelta files, simply apply SoH_delta to Deantwo's original 2022 SoH .exe and auloginclient_delta to Deantwo's original 2022 AuLoginClient13.dll
