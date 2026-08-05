@@ -3,9 +3,16 @@
 #include <string>
 #include <mutex>
 
+struct ServerAddressAscii
+{
+    const char* ascii;
+    int length;
+};
+
 static std::wstring g_serverAddress;
 static std::string  g_serverAddressAscii;
 static std::mutex   g_mutex;
+static ServerAddressAscii g_asciiInfo = {"",0};
 
 extern "C" __declspec(dllexport)
 void SetServerAddress(const wchar_t* address)
@@ -23,20 +30,16 @@ void SetServerAddress(const wchar_t* address)
         g_serverAddressAscii.push_back(static_cast<char>(*address));
         ++address;
     }
+
+    g_asciiInfo.ascii = g_serverAddressAscii.c_str();
+    g_asciiInfo.length = static_cast<int>(g_serverAddressAscii.length());
 }
 
 extern "C" __declspec(dllexport)
-const char* GetServerAddressAscii()
+const ServerAddressAscii* GetServerAddressInfo()
 {
     std::lock_guard<std::mutex> lock(g_mutex);
-    return g_serverAddressAscii.c_str();
-}
-
-extern "C" __declspec(dllexport)
-int GetServerAddressAsciiLength()
-{
-    std::lock_guard<std::mutex> lock(g_mutex);
-    return static_cast<int>(g_serverAddressAscii.length());
+    return &g_asciiInfo;
 }
 
 BOOL APIENTRY DllMain(
