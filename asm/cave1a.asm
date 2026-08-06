@@ -9,11 +9,11 @@ push rdx
 push r8
 push r9
 push r10
-sub rsp,0x20
+sub rsp, 0x20
 lea rbx, ds:[0x00007FF7D71970A3]
-sub rbx,E070A3
-add rbx,E07F80
-mov ecx,0x30
+sub rbx, 0xE070A3
+add rbx, 0xE07F80
+mov ecx, 0x30
 call 0x00007FF7D69BB930
 mov r13,rax
 mov qword ptr ss:[rbp+0x50],rax
@@ -25,7 +25,7 @@ call qword ptr ds:[0x00007FF7D6BA3C48]
 mov qword ptr ds:[0x00007FF7D7197750], rax
 mov rax, qword ptr ds:[0x00007FF7D6BB43F0]
 mov rcx,qword ptr ds:[rax]
-add rcx,0x238
+add rcx, 0x238
 mov rdx,rbx
 lea r8, ds:[0x00007FF7D7197750]
 mov r9, rbx
@@ -67,7 +67,7 @@ mov rcx,rdi
 xor r8d,r8d
 mov r9d,ebx
 call qword ptr ds:[0x00007FF7D6BA46F8]
-add rsp,0x20
+add rsp, 0x20
 pop r10
 pop r9
 pop r8
