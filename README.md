@@ -10,3 +10,5 @@ The plan is to ideally move the ASM code to our own separate custom DLL, however
 To use the xdelta files, simply apply SoH_delta to Deantwo's original 2018 SoH .exe and auloginclient_delta to Deantwo's original 2018 AuLoginClient13.dll
 
 Might eventually create a patcher that automatically applies the xdeltas and redirect.dll to an existing copy of the 2018 client
+
+The .cave PE section is added with CFF explorer, and it's very small, meaning the exe does not meaningfully increase in size
