@@ -16,3 +16,5 @@ Might eventually create a patcher that automatically applies the xdeltas and red
 The .cave PE section is added with CFF explorer, and it's very small, meaning the exe does not meaningfully increase in size
 
 This was my first reverse engineering/asm project of any kind, I fumbled my way through all of it with the help of chatgpt
+
+See [notes](/docs/notes.md) for details
