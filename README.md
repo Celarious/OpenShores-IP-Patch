@@ -12,3 +12,5 @@ To use the xdelta files, simply apply SoH_delta to Deantwo's original 2018 SoH .
 Might eventually create a patcher that automatically applies the xdeltas and redirect.dll to an existing copy of the 2018 client
 
 The .cave PE section is added with CFF explorer, and it's very small, meaning the exe does not meaningfully increase in size
+
+This was my first reverse engineering/asm project of any kind, I fumbled my way through all of it with the help of chatgpt
