@@ -1,5 +1,5 @@
 # OpenShores-IP-Patch
-A client modification for the 2022 Shores of Hazeron MMO that adds an IP address input field, and redirects connections from the hardcoded *.hazeron.net to the entered IP address (or hostname).
+A client modification for the 2018 (13n60) Shores of Hazeron MMO that adds an IP address input field, and redirects connections from the hardcoded *.hazeron.net to the entered IP address (or hostname).
 
 The modification also stores the user-entered IP/host in the registry and restores it on client restart, just like with username and password for convenience.
 
@@ -8,3 +8,5 @@ The majority of the work is done in ASM client patches and Redirect.dll (built f
 The plan is to ideally move the ASM code to our own separate custom DLL, however that requires matching the build toolchain first.
 
 To use the xdelta files, simply apply SoH_delta to Deantwo's original 2022 SoH .exe and auloginclient_delta to Deantwo's original 2022 AuLoginClient13.dll
+
+Might eventually create a patcher that automatically applies the xdeltas and redirect.dll to an existing copy of the 2018 client
