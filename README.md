@@ -5,6 +5,8 @@ A client modification for the 2018 (13n60) Shores of Hazeron MMO that adds an IP
 
 The modification also stores the user-entered IP/host in the registry and restores it on client restart, just like with username and password for convenience.
 
+This patch also replaces the login screen background image with Background.png, so the user can easily customize it.
+
 # How to use
 The recommended way is to use the OpenShores launcher, which automatically downloads the correct SoH client and applies the IP patch:
 https://github.com/Norway174/OpenShores-Launcher/releases/
