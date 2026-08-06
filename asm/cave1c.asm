@@ -1,12 +1,10 @@
-// the gs:60 pointer is the PEB, used for fetching the image base of the exe for >2gb ASLR-stable resolutions
-
 push r12
 push r13
 sub rsp, 0x60
 lea rdx, ds:[0x00007FF7D71975E2] // IP storage area
 mov rcx,qword ptr ds:[7FF7D7197FF0] // QString QLineEdit::text(void), this is how we extract the host the user entered
 call qword ptr ds:[0x00007FF7D6BA5BC0]
-mov rax, qword ptr gs:[0x0000000000000060]
+mov rax, qword ptr gs:[0x0000000000000060] // this gs:60 pointer is the PEB, used for fetching the image base of the exe for >2gb ASLR-stable resolutions
 mov rax, qword ptr ds:[rax+0x10]
 add rax, 0x813050
 lea rcx, ds:[0x00007FF7D7197574]
@@ -36,7 +34,7 @@ mov rdx,qword ptr ds:[rax]
 movzx r8d,word ptr ds:[rdx+0x148]
 add rdx, 0x150
 lea rdx, ss:[rsp+0x40]
-mov rax,qword ptr gs:[60]
+mov rax,qword ptr gs:[60] // probably should store the PEB resolution somewhere instead of duplicating this, but eh
 mov rax,qword ptr ds:[rax+10]
 add rax,813050
 lea rcx, ds:[0x00007FF7D71975AF]
