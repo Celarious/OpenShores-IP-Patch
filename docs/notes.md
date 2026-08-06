@@ -16,4 +16,8 @@ I decided to copy this pattern and create a new "Host" key in the same Shores of
 When the user clicks login, their entered IP is saved using `AuSettings::writeEntry()`, and the key can be seen in plaintext in `Computer\HKEY_CURRENT_USER\SOFTWARE\Software Engineering\Shores of Hazeron\Account\Host`.
 For example, if the user enters play.openshores.net as their IP, the registry key `Computer\HKEY_CURRENT_USER\SOFTWARE\Software Engineering\Shores of Hazeron\Account\Host` will be created with value "play.openshores.net".
 
+`"Where is cave1b?"`
+
+I originally did all the post-login injection logic there, however, I realized too late that I had hijacked the original instructions too early, meaning it ran before the user ever presses Login. This made it useless, so I restored the original instructions and skipped straight to cave1c closer to the connection logic.
+
 All debugging, testing and patching was done with x64dbg, meaning no decompilation was done, only instruction and byte modification/insertion
