@@ -16,6 +16,8 @@ I decided to copy this pattern and create a new "Host" key in the same Shores of
 When the user clicks login, their entered IP is saved using `AuSettings::writeEntry()`, and the key can be seen in plaintext in `Computer\HKEY_CURRENT_USER\SOFTWARE\Software Engineering\Shores of Hazeron\Account\Host`.
 For example, if the user enters play.openshores.net as their IP, the registry key `Computer\HKEY_CURRENT_USER\SOFTWARE\Software Engineering\Shores of Hazeron\Account\Host` will be created with value "play.openshores.net".
 
+The background image hijack was extremely simple. Although I was unable to find the raw image data of the original background image, changing it was as simple as redirecting the data source ASCII string that gets passed to `QString::fromAscii_helper`, which took a grand total of 3 instructions + the bytes to store the null-terminated Background.png string itself. Because the background image was changed from an internal embedded resource to a filesystem location, this allows the user to easily customize it by replacing Background.png with whatever they want their background to be.
+
 ### "Where is cave1b?"
 
 I originally did all the post-login injection logic there, however, I realized too late that I had hijacked the original instructions too early, meaning it ran before the user ever presses Login. This made it useless, so I restored the original instructions and skipped straight to cave1c closer to the connection logic.
