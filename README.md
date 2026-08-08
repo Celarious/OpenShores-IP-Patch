@@ -27,4 +27,4 @@ This was my first reverse engineering/asm project of any kind, I fumbled my way 
 See [notes](/docs/notes.md) for more details
 
 # Screenshot
- ![Full login screen](docs/Shores_of_Hazeron_Patched_vF5QDpDG68.png)
+ ![Full login screen](docs/screenshots/Shores_of_Hazeron_zYwUE6Y4hb.jpg)
