@@ -16,9 +16,9 @@ To use the xdelta files, simply apply SoH_delta to Deantwo's original 2018 SoH .
 You will also need to download Redirect.dll and place it in the same folder as the .exe
 
 # Notes
-The majority of the work is done in ASM client patches and Redirect.dll (built from dllmain.cpp) is just to offload a few functions. Moving more of the functionality to Redirect.dll requires importing the same exact Qt SDK as the original client, which appears to be Qt 5.8.0, along with MSVC v140 (VS2015).
+The majority of the work is done in ASM client patches and Redirect.dll (built from dllmain.cpp) is just to offload a few functions. When calling Qt functions in custom DLLs, the ABI must match the original program, which requires the same exact Qt SDK as the original client (Qt 5.8.0), along with MSVC v140 (VS2015).
 
-The plan is to ideally move the ASM code to our own separate custom DLL, however that requires matching the build toolchain first. I have created the "dll-migration" branch for this. I will start on it as soon as I find an official source of MSVC v140, as the Visual Studio Installer doesn't provide it.
+The plan is to ideally move the ASM code to our own separate custom DLL. I have created the "dll-migration" branch for this.
 
 The .cave PE section is added with CFF explorer, and it's very small, meaning the exe does not meaningfully increase in size
 
