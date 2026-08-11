@@ -2,6 +2,7 @@
 #include <windows.h>
 #include <string>
 #include <mutex>
+#include <QString>
 
 struct ServerAddressAscii
 {
@@ -40,6 +41,19 @@ const ServerAddressAscii* GetServerAddressInfo()
 {
     std::lock_guard<std::mutex> lock(g_mutex);
     return &g_asciiInfo;
+}
+
+extern "C" __declspec(dllexport)
+void QtTest()
+{
+    QString test = QString::fromLatin1("Qt ABI test");
+
+    MessageBoxW(
+        nullptr,
+        reinterpret_cast<LPCWSTR>(test.utf16()),
+        L"Redirect.dll",
+        MB_OK
+    );
 }
 
 BOOL APIENTRY DllMain(
