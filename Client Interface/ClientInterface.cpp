@@ -3,6 +3,7 @@
 #include <mutex>
 #include <fstream>
 #include "ClientInterface.h"
+#include <QtWidgets/QVBoxLayout>
 
 static int g_state = 0;
 static std::mutex g_mutex;
@@ -11,7 +12,7 @@ static void tempLog(int state) {
     std::ofstream("ClientInterface.log", std::ios::app) << "SetState(" << state << ") received!\n";
 }
 
-static void ProcessState(int state)
+static void ProcessState(int state, QVBoxLayout* layout)
 {
     switch (state)
     {
@@ -30,11 +31,11 @@ static void ProcessState(int state)
         tempLog(state);
         break;
 
-    case 4:
+    case 4: // Right after AuGlobal is initialized
         tempLog(state);
         break;
 
-    case 5:
+    case 5: // Login UI
         tempLog(state);
         break;
 
@@ -57,13 +58,13 @@ static void ProcessState(int state)
 }
 
 extern "C" __declspec(dllexport)
-void SetState(int state)
+void SetState(int state, QVBoxLayout* layout = nullptr) // 2nd parameter is optional, currently only used for case 5 to pass the login layout from RDI to the interface
 {
     {
         std::lock_guard<std::mutex> lock(g_mutex);
         g_state = state;
     }
-    ProcessState(state);
+    ProcessState(state, layout);
 }
 
 extern "C" __declspec(dllexport)
