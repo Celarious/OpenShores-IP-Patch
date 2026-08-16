@@ -10,3 +10,18 @@
 #define CLIENTINTERFACE_API __declspec(dllimport)
 #endif
 
+#pragma once
+
+#include <windows.h>
+#include <QString>
+
+extern HMODULE hGame;
+
+using ReadEntryFn = void(__cdecl*)(
+    void* settings,
+    QString& result,
+    const QString& key,
+    QString* resultStorage
+    );
+
+extern ReadEntryFn ReadEntry;
