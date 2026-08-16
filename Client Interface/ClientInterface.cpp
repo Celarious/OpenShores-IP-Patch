@@ -4,9 +4,25 @@
 #include <fstream>
 #include "ClientInterface.h"
 #include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QLineEdit>
 
-static int g_state = 0;
-static std::mutex g_mutex;
+static int g_state = 0; // Global state variable
+static std::mutex g_mutex; // Mutex for safely modifying the variable
+HMODULE hGame = GetModuleHandleW(nullptr);
+
+using ReadEntryFn = void(__cdecl*)(
+    void* settings,
+    QString& result,
+    const QString& key,
+    QString* resultStorage
+);
+
+auto ReadEntry = reinterpret_cast<ReadEntryFn>( // Calls SoH's own AuSettings::ReadEntry()
+    GetProcAddress(
+        GetModuleHandleW(L"auglobal13.dll"),
+        "?readEntry@AuSettings@@QEBA?AVQString@@AEBV2@0@Z"
+    )
+);
 
 static void tempLog(int state) {
     std::ofstream("ClientInterface.log", std::ios::app) << "SetState(" << state << ") received!\n";
@@ -37,6 +53,21 @@ static void ProcessState(int state, QVBoxLayout* layout)
 
     case 5: // Login UI
         tempLog(state);
+        {
+            auto pAuGlobal = reinterpret_cast<uintptr_t*>(
+                reinterpret_cast<uintptr_t>(hGame) + 0x8243F0
+                );
+            auto gpAuGlobal = *pAuGlobal;
+            auto auGlobal = *reinterpret_cast<uintptr_t*>(gpAuGlobal);
+            void* settings = reinterpret_cast<void*>(auGlobal + 0x238);
+            QString key("/Account/Host"); // Sets the key to check
+            QString host; // This is used as the return variable
+            ReadEntry(settings, host, key, &host); // Actually reads the key's value
+            auto* ipEdit = new QLineEdit(host); // Creates a QLineEdit with the host prefilled if it exists
+            ipEdit->setToolTip(QStringLiteral("<html><b>IP address</b><br>Enter OpenShores IP</html>"));
+            ipEdit->setPlaceholderText(QStringLiteral("Enter IP address"));
+            layout->addWidget(ipEdit); // Adds the widget to the UI
+        }
         break;
 
     case 6:
