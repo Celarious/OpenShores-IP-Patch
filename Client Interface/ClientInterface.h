@@ -25,3 +25,11 @@ using ReadEntryFn = void(__cdecl*)(
     );
 
 extern ReadEntryFn ReadEntry;
+
+using WriteEntryFn = void(__cdecl*)(
+    void* settings,
+    const QString& key,
+    const QString& value
+    );
+
+extern WriteEntryFn WriteEntry;
