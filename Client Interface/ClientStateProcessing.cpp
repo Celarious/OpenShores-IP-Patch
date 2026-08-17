@@ -37,7 +37,26 @@ void ProcessState(int state, void* context)
         tempLog(state);
         break;
 
-    case 5: // Login UI setup
+    case 5: // Scrolling text state, called early in UI setup
+        tempLog(state);
+        {
+            if (!context)
+                return;
+
+            QList<QString>* textList =
+                reinterpret_cast<QList<QString>*>(
+                    static_cast<char*>(context) + 0x30 // RSI register passed through RDX (win x64 convention)
+                    );
+
+            textList->clear(); // Clears the original scrolling text list
+
+            textList->append(QString::fromLatin1("*OpenShores")); // The * at the start of the string is a marker that the game checks for, and if present, removes it and centers + boldens the line
+            textList->append(QString::fromLatin1("Welcome to OpenShores"));
+            textList->append(QString::fromLatin1("V0.0.5 (2026)"));
+        }
+        break;
+
+    case 6: // Login UI setup
         tempLog(state);
         {
             QVBoxLayout* layout = static_cast<QVBoxLayout*>(context);
@@ -57,7 +76,7 @@ void ProcessState(int state, void* context)
         }
         break;
 
-    case 6: // Background image loading and rendering
+    case 7: // Background image loading and rendering
         tempLog(state);
         {
             QImage* image = static_cast<QImage*>(context); // Converts the passed context to a qimage
@@ -65,7 +84,7 @@ void ProcessState(int state, void* context)
         }
         break;
 
-    case 7: // Login UI ready, painting started
+    case 8: // Login UI ready, painting started
         if (!g_state7Fired) // Prevents state 7 from repeatedly firing
         {
             g_state7Fired = true;
@@ -73,7 +92,7 @@ void ProcessState(int state, void* context)
         }
         break;
 
-    case 8: // Immediate post-login click
+    case 9: // Immediate post-login click
         tempLog(state);
         {
             QString key("/Account/Host");
@@ -82,7 +101,7 @@ void ProcessState(int state, void* context)
         }
         break;
 
-    case 9: // Login comms begin
+    case 10: // Login comms begin
         tempLog(state);
         {
             QString host = g_ipEdit->text();
