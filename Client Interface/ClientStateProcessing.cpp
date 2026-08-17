@@ -4,6 +4,10 @@
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QLineEdit>
 #include <fstream>
+#include <QtCore/QCoreApplication>
+#include <QtCore/QStringList>
+#include <QtWidgets/QPushButton>
+#include <QtCore/QMetaObject>
 
 static QLineEdit* g_ipEdit = nullptr; // Our inserted IP input field
 static bool g_state8Fired = false;
@@ -11,10 +15,26 @@ static uintptr_t g_auGlobal = 0; // Storage for AuGlobal to avoid repeat lookups
 static void* g_settings = nullptr; // AuGlobal + 0x238
 
 static void tempLog(int state) { // Temporary log function for checking if the states are called
+    static bool initialized = false;
+    if (!initialized) {
+        std::ofstream("ClientInterface.log", std::ios::trunc).close();
+        std::ofstream("ClientInterface.log", std::ios::app) << "==== Logging started! ====\n";
+        initialized = true;
+    }
     std::ofstream("ClientInterface.log", std::ios::app) << "SetState(" << state << ") received!\n";
 }
 
-void ProcessState(int state, void* context)
+bool CheckLaunchArguments() // Function that handles the OS launcher's custom args
+{
+    const QStringList args = QCoreApplication::arguments();
+    bool noLogin = args.contains(QStringLiteral("-nologin"));
+    std::ofstream log("ClientInterface.log", std::ios::app);
+    log << "-nologin = "
+        << (noLogin ? "true" : "false") << '\n';
+    return noLogin;
+}
+
+void ProcessState(int state, void* context, void* aux)
 {
     switch (state)
     {
@@ -52,7 +72,7 @@ void ProcessState(int state, void* context)
 
             textList->append(QString::fromLatin1("*OpenShores")); // The * at the start of the string is a marker that the game checks for, and if present, removes it and centers + boldens the line
             textList->append(QString::fromLatin1("Welcome to OpenShores"));
-            textList->append(QString::fromLatin1("V0.0.5 (2026)"));
+            textList->append(QString::fromLatin1("V0.0.7 (2026)"));
         }
         break;
 
@@ -73,6 +93,21 @@ void ProcessState(int state, void* context)
             g_ipEdit->setToolTip(QStringLiteral("<html><b>IP address</b><br>Enter OpenShores IP</html>"));
             g_ipEdit->setPlaceholderText(QStringLiteral("Enter IP address"));
             layout->addWidget(g_ipEdit); // Adds the widget to the UI
+            if (CheckLaunchArguments())
+            {
+                QPushButton* loginButton =
+                    *reinterpret_cast<QPushButton**>(
+                        static_cast<char*>(aux) + 0x50
+                        );
+                if (loginButton)
+                {
+                    QMetaObject::invokeMethod(
+                        loginButton,
+                        "click",
+                        Qt::QueuedConnection
+                    );
+                }
+            }
         }
         break;
 
@@ -85,7 +120,7 @@ void ProcessState(int state, void* context)
         break;
 
     case 8: // Login UI ready, painting started
-        if (!g_state8Fired) // Prevents state 7 from repeatedly firing
+        if (!g_state8Fired) // Prevents state from repeatedly firing
         {
             g_state8Fired = true;
             tempLog(state);
