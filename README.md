@@ -5,16 +5,18 @@ A client modification for the 2018 (13n60) Shores of Hazeron MMO that adds an IP
 
 The modification also stores the user-entered IP/host in the registry and restores it on client restart, just like with username and password for convenience.
 
-This patch also replaces the login screen background image with Background.png, so the user can easily customize it.
+This patch also replaces the login screen background image with Background.png, so the user can easily customize it, along with the scrolling text.
 
 # How to use
 The recommended way is to use the OpenShores launcher, which automatically downloads the correct SoH client and applies the IP patch:
 https://github.com/Norway174/OpenShores-Launcher/releases/
 
 # Notes
-As of release 5, all client modification functionality has been ported to a client interface DLL written in C++. ASM is only used to call functions of that DLL. When calling Qt functions in custom DLLs, the ABI must match the original program, which requires the same exact Qt SDK as the original client (Qt 5.8.0), along with MSVC v140 (VS2015).
+As of V0.0.5, all client modification functionality has been ported to a client interface DLL written in C++. ASM is only used to call SetState() of that DLL. 
 
-The .cave PE section is added with CFF explorer, and it's very small, meaning the exe does not meaningfully increase in size
+When calling Qt functions in custom DLLs, the ABI must match the original program, which requires the same exact Qt SDK as the original client (Qt 5.8.0), along with MSVC v140 (VS2015). Our custom DLLs are thus built with MSVC v140 linked against Qt5.8.0.
+
+The .cave PE sections are added with CFF explorer, and it's very small, meaning the exe does not meaningfully increase in size
 
 This was my first reverse engineering/asm project of any kind, I fumbled my way through all of it with the help of chatgpt
 
