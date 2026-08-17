@@ -11,14 +11,8 @@ This patch also replaces the login screen background image with Background.png, 
 The recommended way is to use the OpenShores launcher, which automatically downloads the correct SoH client and applies the IP patch:
 https://github.com/Norway174/OpenShores-Launcher/releases/
 
-Alternatively, you can manually apply the xdelta patches to the game:
-To use the xdelta files, simply apply SoH_delta to Deantwo's original 2018 SoH .exe and auloginclient_delta to Deantwo's original 2018 AuLoginClient13.dll
-You will also need to download Redirect.dll and place it in the same folder as the .exe
-
 # Notes
-The majority of the work is done in ASM client patches and Redirect.dll (built from dllmain.cpp) is just to offload a few functions. When calling Qt functions in custom DLLs, the ABI must match the original program, which requires the same exact Qt SDK as the original client (Qt 5.8.0), along with MSVC v140 (VS2015).
-
-The plan is to ideally move the ASM code to our own separate custom DLL. I have created the "dll-migration" branch for this.
+As of release 5, all client modification functionality has been ported to a client interface DLL written in C++. ASM is only used to call functions of that DLL. When calling Qt functions in custom DLLs, the ABI must match the original program, which requires the same exact Qt SDK as the original client (Qt 5.8.0), along with MSVC v140 (VS2015).
 
 The .cave PE section is added with CFF explorer, and it's very small, meaning the exe does not meaningfully increase in size
 
