@@ -1,9 +1,12 @@
 #include "pch.h"
+#include <fstream>
+
 #include "ClientInterface.h"
 #include "ClientStateProcessing.h"
+#include "AuFunctions.h"
+
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QLineEdit>
-#include <fstream>
 #include <QtCore/QCoreApplication>
 #include <QtCore/QStringList>
 #include <QtWidgets/QPushButton>
@@ -17,7 +20,7 @@ static void* g_settings = nullptr; // AuGlobal + 0x238
 static void tempLog(int state) { // Temporary log function for checking if the states are called
     static bool initialized = false;
     if (!initialized) {
-        std::ofstream("ClientInterface.log", std::ios::trunc).close();
+        std::ofstream("ClientInterface.log", std::ios::trunc).close(); // Wipes itself on every program start so it doesn't fill forever
         std::ofstream("ClientInterface.log", std::ios::app) << "==== Logging started! ====\n";
         initialized = true;
     }
@@ -27,7 +30,7 @@ static void tempLog(int state) { // Temporary log function for checking if the s
 bool CheckLaunchArguments() // Function that handles the OS launcher's custom args
 {
     const QStringList args = QCoreApplication::arguments();
-    bool noLogin = args.contains(QStringLiteral("-nologin"));
+    bool noLogin = args.contains(QStringLiteral("-nologin")); // Checks if -nologin was passed
     std::ofstream log("ClientInterface.log", std::ios::app);
     log << "-nologin = "
         << (noLogin ? "true" : "false") << '\n';
@@ -88,7 +91,7 @@ void ProcessState(int state, void* context, void* aux)
             g_settings = reinterpret_cast<void*>(g_auGlobal + 0x238); // Stores the existing AuSettings variable, since it needs to be provided when calling any AuSettings function
             QString key("/Account/Host"); // Sets the key to check
             QString host; // This is used as the return variable
-            ReadEntry(g_settings, host, key, &host); // Actually reads the key's value
+            Au::ReadEntry(g_settings, host, key, &host); // Actually reads the key's value
             g_ipEdit = new QLineEdit(host); // Prefills the input field if the Host key exists
             g_ipEdit->setToolTip(QStringLiteral("<html><b>IP address</b><br>Enter OpenShores IP</html>"));
             g_ipEdit->setPlaceholderText(QStringLiteral("Enter IP address"));
@@ -101,7 +104,7 @@ void ProcessState(int state, void* context, void* aux)
                         );
                 if (loginButton)
                 {
-                    QMetaObject::invokeMethod(
+                    QMetaObject::invokeMethod( // Automatically logs in if the launcher passes -nologin by simulating a click
                         loginButton,
                         "click",
                         Qt::QueuedConnection
@@ -132,7 +135,7 @@ void ProcessState(int state, void* context, void* aux)
         {
             QString key("/Account/Host");
             QString host = g_ipEdit->text();
-            WriteEntry(g_settings, key, host); // Writes the user's entered host to the registry for prefilling
+            Au::WriteEntry(g_settings, key, host); // Writes the user's entered host to the registry for prefilling
         }
         break;
 

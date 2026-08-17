@@ -9,20 +9,6 @@ static int g_state = 0; // Global state variable
 static std::mutex g_mutex; // Mutex for safely modifying the variable
 HMODULE hGame = GetModuleHandleW(nullptr);
 
-ReadEntryFn ReadEntry = reinterpret_cast<ReadEntryFn>( // Calls SoH's own AuSettings::ReadEntry()
-    GetProcAddress(
-        GetModuleHandleW(L"auglobal13.dll"),
-        "?readEntry@AuSettings@@QEBA?AVQString@@AEBV2@0@Z"
-    )
-);
-
-WriteEntryFn WriteEntry = reinterpret_cast<WriteEntryFn>(
-    GetProcAddress(
-        GetModuleHandleW(L"auglobal13.dll"),
-        "?writeEntry@AuSettings@@QEAAXAEBVQString@@0@Z"
-    )
-);
-
 extern "C" __declspec(dllexport)
 void SetState(int state, void* context = nullptr, void* aux = nullptr) // 2nd and 3rd parameters are optional, used whenever a state needs extra objects
 {

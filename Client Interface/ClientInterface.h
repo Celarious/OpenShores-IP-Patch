@@ -13,23 +13,5 @@
 #pragma once
 
 #include <windows.h>
-#include <QString>
 
 extern HMODULE hGame;
-
-using ReadEntryFn = void(__cdecl*)(
-    void* settings,
-    QString& result,
-    const QString& key,
-    QString* resultStorage
-    );
-
-extern ReadEntryFn ReadEntry;
-
-using WriteEntryFn = void(__cdecl*)(
-    void* settings,
-    const QString& key,
-    const QString& value
-    );
-
-extern WriteEntryFn WriteEntry;
