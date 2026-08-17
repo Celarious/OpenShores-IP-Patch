@@ -24,13 +24,13 @@ WriteEntryFn WriteEntry = reinterpret_cast<WriteEntryFn>(
 );
 
 extern "C" __declspec(dllexport)
-void SetState(int state, void* context = nullptr) // 2nd parameter is optional, used whenever a state needs an extra object
+void SetState(int state, void* context = nullptr, void* aux = nullptr) // 2nd and 3rd parameters are optional, used whenever a state needs extra objects
 {
     {
         std::lock_guard<std::mutex> lock(g_mutex);
         g_state = state;
     }
-    ProcessState(state, context); // This might be temporary (there is nothing more permanent than a temporary software solution), used to migrate the core asm functionality to C++
+    ProcessState(state, context, aux); // This might be temporary (there is nothing more permanent than a temporary software solution), used to migrate the core asm functionality to C++
 }
 
 extern "C" __declspec(dllexport)
