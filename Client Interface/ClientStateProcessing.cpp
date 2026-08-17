@@ -6,7 +6,7 @@
 #include <fstream>
 
 static QLineEdit* g_ipEdit = nullptr; // Our inserted IP input field
-static bool g_state7Fired = false;
+static bool g_state8Fired = false;
 static uintptr_t g_auGlobal = 0; // Storage for AuGlobal to avoid repeat lookups
 static void* g_settings = nullptr; // AuGlobal + 0x238
 
@@ -85,9 +85,9 @@ void ProcessState(int state, void* context)
         break;
 
     case 8: // Login UI ready, painting started
-        if (!g_state7Fired) // Prevents state 7 from repeatedly firing
+        if (!g_state8Fired) // Prevents state 7 from repeatedly firing
         {
-            g_state7Fired = true;
+            g_state8Fired = true;
             tempLog(state);
         }
         break;
