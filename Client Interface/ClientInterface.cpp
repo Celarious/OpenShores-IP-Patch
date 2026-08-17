@@ -16,6 +16,13 @@ ReadEntryFn ReadEntry = reinterpret_cast<ReadEntryFn>( // Calls SoH's own AuSett
     )
 );
 
+WriteEntryFn WriteEntry = reinterpret_cast<WriteEntryFn>(
+    GetProcAddress(
+        GetModuleHandleW(L"auglobal13.dll"),
+        "?writeEntry@AuSettings@@QEAAXAEBVQString@@0@Z"
+    )
+);
+
 extern "C" __declspec(dllexport)
 void SetState(int state, void* context = nullptr) // 2nd parameter is optional, used whenever a state needs an extra object
 {
