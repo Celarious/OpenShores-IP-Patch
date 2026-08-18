@@ -18,4 +18,6 @@ using WriteEntryFn = void(__cdecl*)(
 namespace Au {
     extern ReadEntryFn ReadEntry;
     extern WriteEntryFn WriteEntry;
+
+    void Initialize();
 }

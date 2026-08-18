@@ -1,20 +1,25 @@
 #include "pch.h"
+#include "ClientInterface.h"
 #include "AuFunctions.h"
 
 // This file is used to centralize the game's existing exported Au functions
 
 namespace Au {
-    ReadEntryFn ReadEntry = reinterpret_cast<ReadEntryFn>(
-        GetProcAddress(
-            GetModuleHandleW(L"auglobal13.dll"),
-            "?readEntry@AuSettings@@QEBA?AVQString@@AEBV2@0@Z"
-        )
-    );
+    ReadEntryFn ReadEntry = nullptr;
+    WriteEntryFn WriteEntry = nullptr;
 
-    WriteEntryFn WriteEntry = reinterpret_cast<WriteEntryFn>(
-        GetProcAddress(
-            GetModuleHandleW(L"auglobal13.dll"),
-            "?writeEntry@AuSettings@@QEAAXAEBVQString@@0@Z"
-        )
-    );
+    void Initialize()
+    {
+        HMODULE hGameModule = GetModuleHandleW(nullptr);
+
+        ReadEntry =
+            *reinterpret_cast<ReadEntryFn*>(
+                reinterpret_cast<uintptr_t>(hGameModule) + 0x824320
+            );
+
+        WriteEntry =
+            *reinterpret_cast<WriteEntryFn*>(
+                reinterpret_cast<uintptr_t>(hGameModule) + 0x824318
+             );
+    }
 }

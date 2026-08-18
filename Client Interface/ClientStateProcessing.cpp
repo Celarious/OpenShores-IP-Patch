@@ -1,5 +1,8 @@
 #include "pch.h"
 #include <fstream>
+#include <chrono>
+#include <iomanip>
+#include <sstream>
 
 #include "ClientInterface.h"
 #include "ClientStateProcessing.h"
@@ -17,14 +20,29 @@ static bool g_state8Fired = false;
 static uintptr_t g_auGlobal = 0; // Storage for AuGlobal to avoid repeat lookups
 static void* g_settings = nullptr; // AuGlobal + 0x238
 
+std::string getTimestamp()
+{
+    auto now = std::chrono::system_clock::now();
+    auto time = std::chrono::system_clock::to_time_t(now);
+
+    std::tm tm;
+    localtime_s(&tm, &time);
+
+    std::ostringstream ss;
+    ss << std::put_time(&tm, "[%H:%M:%S] ");
+    return ss.str();
+}
+
 static void tempLog(int state) { // Temporary log function for checking if the states are called
-    static bool initialized = false;
-    if (!initialized) {
+    static bool initialized = false; // So the log only wipes itself once at startup
+
+    if (!initialized) { // So the log only wipes itself once at startup
         std::ofstream("ClientInterface.log", std::ios::trunc).close(); // Wipes itself on every program start so it doesn't fill forever
-        std::ofstream("ClientInterface.log", std::ios::app) << "==== Logging started! ====\n";
+        std::ofstream("ClientInterface.log", std::ios::app) << "==== Logging started! ====\n\n";
         initialized = true;
     }
-    std::ofstream("ClientInterface.log", std::ios::app) << "SetState(" << state << ") received!\n";
+    std::ofstream log("ClientInterface.log", std::ios::app);
+    log << getTimestamp() << "SetState(" << state << ") received!\n";
 }
 
 bool CheckLaunchArguments() // Function that handles the OS launcher's custom args
@@ -32,9 +50,15 @@ bool CheckLaunchArguments() // Function that handles the OS launcher's custom ar
     const QStringList args = QCoreApplication::arguments();
     bool noLogin = args.contains(QStringLiteral("-nologin")); // Checks if -nologin was passed
     std::ofstream log("ClientInterface.log", std::ios::app);
-    log << "-nologin = "
+    log << getTimestamp() << "-nologin = "
         << (noLogin ? "true" : "false") << '\n';
     return noLogin;
+}
+
+void tempLog(uintptr_t value)
+{
+    std::ofstream log("ClientInterface.log", std::ios::app);
+    log << "0x" << std::hex << value << '\n';
 }
 
 void ProcessState(int state, void* context, void* aux)
@@ -46,6 +70,7 @@ void ProcessState(int state, void* context, void* aux)
 
     case 1: // Early startup, right after entry point
         tempLog(state);
+        Au::Initialize();
         break;
 
     case 2: // Qt+Au initialization after CRT setup
@@ -75,7 +100,7 @@ void ProcessState(int state, void* context, void* aux)
 
             textList->append(QString::fromLatin1("*OpenShores")); // The * at the start of the string is a marker that the game checks for, and if present, removes it and centers + boldens the line
             textList->append(QString::fromLatin1("Welcome to OpenShores"));
-            textList->append(QString::fromLatin1("V0.0.7 (2026)"));
+            textList->append(QString::fromLatin1("V0.0.9 (2026)"));
         }
         break;
 
