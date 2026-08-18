@@ -3,7 +3,7 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="ClientInterface/ClientInterface.vcxproj" Id="f841a54b-abac-462f-b47c-64b9afbf3b20" />
+  <Project Path="Client Interface/ClientInterface.vcxproj" Id="f841a54b-abac-462f-b47c-64b9afbf3b20" />
   <Project Path="Redirect/Redirect.vcxproj" Id="b9ae73d7-2ebc-4696-89e4-3a5e374e030d">
     <Build Solution="Release|*" Project="false" />
   </Project>
