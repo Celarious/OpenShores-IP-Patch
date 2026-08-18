@@ -5,21 +5,19 @@
 // This file is used to centralize the game's existing exported Au functions
 
 namespace Au {
-    ReadEntryFn ReadEntry = nullptr;
-    WriteEntryFn WriteEntry = nullptr;
+    ReadEntryFn ReadEntry;
+    WriteEntryFn WriteEntry;
 
-    void Initialize()
+    void Initialize() // Ensures that the program has loaded before resolving addresses
     {
-        HMODULE hGameModule = GetModuleHandleW(nullptr);
-
         ReadEntry =
             *reinterpret_cast<ReadEntryFn*>(
-                reinterpret_cast<uintptr_t>(hGameModule) + 0x824320
+                reinterpret_cast<uintptr_t>(hGame) + 0x824320
             );
 
         WriteEntry =
             *reinterpret_cast<WriteEntryFn*>(
-                reinterpret_cast<uintptr_t>(hGameModule) + 0x824318
+                reinterpret_cast<uintptr_t>(hGame) + 0x824318
              );
     }
 }
