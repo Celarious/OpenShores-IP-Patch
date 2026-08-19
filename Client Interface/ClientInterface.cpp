@@ -1,7 +1,9 @@
 #include "pch.h"
+
 #include <windows.h>
 #include <mutex>
 #include <fstream>
+
 #include "ClientInterface.h"
 #include "ClientStateProcessing.h"
 

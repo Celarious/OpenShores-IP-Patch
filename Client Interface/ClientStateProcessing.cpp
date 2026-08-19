@@ -1,4 +1,5 @@
 #include "pch.h"
+#include <sstream>
 
 #include "ClientInterface.h"
 #include "ClientStateHelpers.h"
@@ -8,12 +9,46 @@
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QStackedLayout>
 #include <QtCore/QMetaObject>
 
 static QLineEdit* g_ipEdit = nullptr; // Our inserted IP input field
 static bool g_state8Fired = false;
 static uintptr_t g_auGlobal = 0; // Storage for AuGlobal to avoid repeat lookups
 static void* g_settings = nullptr; // AuGlobal + 0x238
+
+void DumpLayout(QLayout* layout, int depth = 0)
+{
+    if (!layout)
+        return;
+
+    std::string indent(depth * 2, ' ');
+
+    logMessage(indent + "Layout: " +
+        std::to_string(reinterpret_cast<uintptr_t>(layout)) +
+        " count=" + std::to_string(layout->count()));
+
+    for (int i = 0; i < layout->count(); ++i)
+    {
+        QLayoutItem* item = layout->itemAt(i);
+
+        if (!item)
+            continue;
+
+        if (QWidget* widget = item->widget())
+        {
+            logMessage(indent + "  Widget: " +
+                std::to_string(reinterpret_cast<uintptr_t>(widget)) +
+                " class=" + widget->metaObject()->className());
+        }
+
+        if (QLayout* child = item->layout())
+        {
+            DumpLayout(child, depth + 1);
+        }
+    }
+}
 
 void ProcessState(int state, void* context, void* aux)
 {
@@ -54,7 +89,7 @@ void ProcessState(int state, void* context, void* aux)
 
             textList->append(QString::fromLatin1("*OpenShores")); // The * at the start of the string is a marker that the game checks for, and if present, removes it and centers + boldens the line
             textList->append(QString::fromLatin1("Welcome to OpenShores"));
-            textList->append(QString::fromLatin1("V0.0.9 (2026)"));
+            textList->append(QString::fromLatin1("V0.1.0 (2026)"));
         }
         break;
 
@@ -140,7 +175,22 @@ void ProcessState(int state, void* context, void* aux)
         }
         break;
 
-    case 11: // Avatar UI construction
+    case 11: // Avatar controller function
+        stateLog(state);
+        {
+            auto* stacked = static_cast<QStackedLayout*>(context);
+            auto* group = stacked->widget(1)->findChild<QGroupBox*>();
+            auto* avatarLayout = static_cast<QBoxLayout*>(group->layout()->itemAt(0)->layout());
+
+            auto* buttonLayout = new QHBoxLayout();
+            buttonLayout->addWidget(new QPushButton("Previous", group));
+            buttonLayout->addWidget(new QPushButton("Next", group));
+
+            avatarLayout->addLayout(buttonLayout);
+        }
+        break;
+
+    case 12: // Avatar UI loop
         stateLog(state);
         break;
     }
