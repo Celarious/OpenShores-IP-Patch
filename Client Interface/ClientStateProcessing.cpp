@@ -1,17 +1,12 @@
 #include "pch.h"
-#include <fstream>
-#include <chrono>
-#include <iomanip>
-#include <sstream>
 
 #include "ClientInterface.h"
+#include "ClientStateHelpers.h"
 #include "ClientStateProcessing.h"
 #include "AuFunctions.h"
 
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QLineEdit>
-#include <QtCore/QCoreApplication>
-#include <QtCore/QStringList>
 #include <QtWidgets/QPushButton>
 #include <QtCore/QMetaObject>
 
@@ -19,47 +14,6 @@ static QLineEdit* g_ipEdit = nullptr; // Our inserted IP input field
 static bool g_state8Fired = false;
 static uintptr_t g_auGlobal = 0; // Storage for AuGlobal to avoid repeat lookups
 static void* g_settings = nullptr; // AuGlobal + 0x238
-
-std::string getTimestamp()
-{
-    auto now = std::chrono::system_clock::now();
-    auto time = std::chrono::system_clock::to_time_t(now);
-
-    std::tm tm;
-    localtime_s(&tm, &time);
-
-    std::ostringstream ss;
-    ss << std::put_time(&tm, "[%H:%M:%S] ");
-    return ss.str();
-}
-
-static void tempLog(int state) { // Temporary log function for checking if the states are called
-    static bool initialized = false; // So the log only wipes itself once at startup
-
-    if (!initialized) { // So the log only wipes itself once at startup
-        std::ofstream("ClientInterface.log", std::ios::trunc).close(); // Wipes itself on every program start so it doesn't fill forever
-        std::ofstream("ClientInterface.log", std::ios::app) << "==== Logging started! ====\n\n";
-        initialized = true;
-    }
-    std::ofstream log("ClientInterface.log", std::ios::app);
-    log << getTimestamp() << "SetState(" << state << ") received!\n";
-}
-
-bool CheckLaunchArguments() // Function that handles the OS launcher's custom args
-{
-    const QStringList args = QCoreApplication::arguments();
-    bool noLogin = args.contains(QStringLiteral("-nologin")); // Checks if -nologin was passed
-    std::ofstream log("ClientInterface.log", std::ios::app);
-    log << getTimestamp() << "-nologin = "
-        << (noLogin ? "true" : "false") << '\n';
-    return noLogin;
-}
-
-void tempLog(uintptr_t value)
-{
-    std::ofstream log("ClientInterface.log", std::ios::app);
-    log << "0x" << std::hex << value << '\n';
-}
 
 void ProcessState(int state, void* context, void* aux)
 {
@@ -69,24 +23,24 @@ void ProcessState(int state, void* context, void* aux)
         break;
 
     case 1: // Early startup, right after entry point
-        tempLog(state);
-        Au::Initialize();
+        stateLog(state);
+        Au::Initialize(); // Prepares the Au functions for our use
         break;
 
     case 2: // Qt+Au initialization after CRT setup
-        tempLog(state);
+        stateLog(state);
         break;
 
     case 3: // Game launch argument processing, right after QCoreApplication::arguments()
-        tempLog(state);
+        stateLog(state);
         break;
 
     case 4: // Right after AuGlobal is initialized
-        tempLog(state);
+        stateLog(state);
         break;
 
     case 5: // Scrolling text state, called early in UI setup
-        tempLog(state);
+        stateLog(state);
         {
             if (!context)
                 return;
@@ -105,7 +59,7 @@ void ProcessState(int state, void* context, void* aux)
         break;
 
     case 6: // Login UI setup
-        tempLog(state);
+        stateLog(state);
         {
             QVBoxLayout* layout = static_cast<QVBoxLayout*>(context);
             auto pAuGlobal = reinterpret_cast<uintptr_t*>(
@@ -140,7 +94,7 @@ void ProcessState(int state, void* context, void* aux)
         break;
 
     case 7: // Background image loading and rendering
-        tempLog(state);
+        stateLog(state);
         {
             QImage* image = static_cast<QImage*>(context); // Converts the passed context to a qimage
             image->load(QString::fromLatin1("assets/Background.png"));
@@ -151,12 +105,12 @@ void ProcessState(int state, void* context, void* aux)
         if (!g_state8Fired) // Prevents state from repeatedly firing
         {
             g_state8Fired = true;
-            tempLog(state);
+            stateLog(state);
         }
         break;
 
     case 9: // Immediate post-login click
-        tempLog(state);
+        stateLog(state);
         {
             QString key("/Account/Host");
             QString host = g_ipEdit->text();
@@ -165,9 +119,13 @@ void ProcessState(int state, void* context, void* aux)
         break;
 
     case 10: // Login comms begin
-        tempLog(state);
+        stateLog(state);
         {
             QString host = g_ipEdit->text();
+
+            std::string hoststring = host.toUtf8().toStdString(); // Logging
+            logMessage("Host set to: " + hoststring);
+
             *reinterpret_cast<QString*>(
                 (g_auGlobal) + 0x150 // Login host
                 ) = host;
@@ -180,6 +138,10 @@ void ProcessState(int state, void* context, void* aux)
                 (g_auGlobal) + 0x218 // Scene host
                 ) = host;
         }
+        break;
+
+    case 11: // Avatar UI construction
+        stateLog(state);
         break;
     }
 }

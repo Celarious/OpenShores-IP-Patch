@@ -186,6 +186,7 @@
   <ItemGroup>
     <ClInclude Include="AuFunctions.h" />
     <ClInclude Include="ClientInterface.h" />
+    <ClInclude Include="ClientStateHelpers.h" />
     <ClInclude Include="ClientStateProcessing.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="pch.h" />
@@ -193,6 +194,7 @@
   <ItemGroup>
     <ClCompile Include="AuFunctions.cpp" />
     <ClCompile Include="ClientInterface.cpp" />
+    <ClCompile Include="ClientStateHelpers.cpp" />
     <ClCompile Include="ClientStateProcessing.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="pch.cpp">
