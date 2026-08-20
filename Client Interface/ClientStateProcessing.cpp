@@ -18,38 +18,6 @@ static bool g_state8Fired = false;
 static uintptr_t g_auGlobal = 0; // Storage for AuGlobal to avoid repeat lookups
 static void* g_settings = nullptr; // AuGlobal + 0x238
 
-void DumpLayout(QLayout* layout, int depth = 0)
-{
-    if (!layout)
-        return;
-
-    std::string indent(depth * 2, ' ');
-
-    logMessage(indent + "Layout: " +
-        std::to_string(reinterpret_cast<uintptr_t>(layout)) +
-        " count=" + std::to_string(layout->count()));
-
-    for (int i = 0; i < layout->count(); ++i)
-    {
-        QLayoutItem* item = layout->itemAt(i);
-
-        if (!item)
-            continue;
-
-        if (QWidget* widget = item->widget())
-        {
-            logMessage(indent + "  Widget: " +
-                std::to_string(reinterpret_cast<uintptr_t>(widget)) +
-                " class=" + widget->metaObject()->className());
-        }
-
-        if (QLayout* child = item->layout())
-        {
-            DumpLayout(child, depth + 1);
-        }
-    }
-}
-
 void ProcessState(int state, void* context, void* aux)
 {
     switch (state)
@@ -175,7 +143,7 @@ void ProcessState(int state, void* context, void* aux)
         }
         break;
 
-    case 11: // Avatar controller function
+    case 11: // Avatar UI setup
         stateLog(state);
         {
             auto* stacked = static_cast<QStackedLayout*>(context);
