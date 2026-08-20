@@ -150,11 +150,15 @@ void ProcessState(int state, void* context, void* aux)
             auto* group = stacked->widget(1)->findChild<QGroupBox*>();
             auto* avatarLayout = static_cast<QBoxLayout*>(group->layout()->itemAt(0)->layout());
 
-            auto* buttonLayout = new QHBoxLayout();
-            buttonLayout->addWidget(new QPushButton("Previous", group));
-            buttonLayout->addWidget(new QPushButton("Next", group));
+            auto* aPageButtons = new QHBoxLayout();
+            auto* prevButton = new QPushButton("Previous", group);
+            auto* nextButton = new QPushButton("Next", group);
+            prevButton->setToolTip(QStringLiteral("Previous avatar list page"));
+            nextButton->setToolTip(QStringLiteral("Next avatar list page"));
+            aPageButtons->addWidget(prevButton);
+            aPageButtons->addWidget(nextButton);
 
-            avatarLayout->addLayout(buttonLayout);
+            avatarLayout->addLayout(aPageButtons);
         }
         break;
 
