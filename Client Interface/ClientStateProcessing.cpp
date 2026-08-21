@@ -14,7 +14,7 @@
 #include <QtCore/QMetaObject>
 
 static QLineEdit* g_ipEdit = nullptr; // Our inserted IP input field
-static bool g_state8Fired = false;
+static bool g_state8Fired = false; // Prevents state 8 from firing repeatedly during loop
 static uintptr_t g_auGlobal = 0; // Storage for AuGlobal to avoid repeat lookups
 static void* g_settings = nullptr; // AuGlobal + 0x238
 
@@ -27,7 +27,7 @@ void ProcessState(int state, void* context, void* aux)
 
     case 1: // Early startup, right after entry point
         stateLog(state);
-        Au::Initialize(); // Prepares the Au functions for our use
+        Au::Initialize(); // Prepares the Au functions for our use, needed to avoid static initializaton timing issues
         break;
 
     case 2: // Qt+Au initialization after CRT setup
@@ -146,9 +146,9 @@ void ProcessState(int state, void* context, void* aux)
     case 11: // Avatar UI setup
         stateLog(state);
         {
-            auto* stacked = static_cast<QStackedLayout*>(context);
+            auto* stacked = static_cast<QStackedLayout*>(context); // The layout is passed to SetState() by the custom ASM
             auto* group = stacked->widget(1)->findChild<QGroupBox*>();
-            auto* avatarLayout = static_cast<QBoxLayout*>(group->layout()->itemAt(0)->layout());
+            auto* avatarLayout = static_cast<QBoxLayout*>(group->layout()->itemAt(0)->layout()); // Finds the layout containing the avatar slots
 
             auto* aPageButtons = new QHBoxLayout();
             auto* prevButton = new QPushButton("Previous", group);
@@ -159,6 +159,7 @@ void ProcessState(int state, void* context, void* aux)
             aPageButtons->addWidget(nextButton);
 
             avatarLayout->addLayout(aPageButtons);
+            logMessage("Avatar page buttons added");
         }
         break;
 
