@@ -12,6 +12,8 @@
 #include <QtWidgets/QGroupBox>
 #include <QtWidgets/QStackedLayout>
 #include <QtCore/QMetaObject>
+#include <QtWidgets/QApplication>
+#include <QtGui/QIcon>
 
 static QLineEdit* g_ipEdit = nullptr; // Our inserted IP input field
 static bool g_state8Fired = false; // Prevents state 8 from firing repeatedly during loop
@@ -101,6 +103,11 @@ void ProcessState(int state, void* context, void* aux)
         {
             QImage* image = static_cast<QImage*>(context); // Converts the passed context to a qimage
             image->load(QString::fromLatin1("assets/Background.png"));
+            QWidget* mainWindow = QApplication::activeWindow();
+
+            if (mainWindow)
+                mainWindow->setWindowTitle("OpenShores");
+                mainWindow->setWindowIcon(QIcon("assets/OS_Icon.png"));
         }
         break;
 
