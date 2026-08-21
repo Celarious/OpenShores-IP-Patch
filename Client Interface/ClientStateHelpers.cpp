@@ -5,8 +5,12 @@
 #include <iomanip>
 #include <sstream>
 
-#include <QtCore/QCoreApplication>
-#include <QtCore/QStringList>
+#include <QCoreApplication>
+#include <QStringList>
+#include <QtGlobal>
+#include <QFile>
+#include <QTextStream>
+#include <QMutex>
 
 #include "ClientStateHelpers.h"
 
@@ -28,11 +32,12 @@ void logMessage(const std::string& message)
     static bool initialized = false; // So the log only wipes itself once at startup
 
     if (!initialized) { // So the log only wipes itself once at startup
-        std::ofstream("ClientInterface.log", std::ios::trunc).close(); // Wipes itself on every program start so it doesn't fill forever
-        std::ofstream("ClientInterface.log", std::ios::app) << "==== Logging started! ====\n\n";
+        std::ofstream("logs/ClientInterface.log", std::ios::trunc).close(); // Wipes itself on every program start so it doesn't fill forever
+        std::ofstream("logs/GameDebug.log", std::ios::trunc).close();
+        std::ofstream("logs/ClientInterface.log", std::ios::app) << "==== Logging started! ====\n\n";
         initialized = true;
     }
-    std::ofstream log("ClientInterface.log", std::ios::app);
+    std::ofstream log("logs/ClientInterface.log", std::ios::app);
     log << getTimestamp() << message << '\n';
 }
 
@@ -47,4 +52,30 @@ bool CheckLaunchArguments() // Function that handles the OS launcher's custom ar
     bool noLogin = args.contains(QStringLiteral("-nologin")); // Checks if -nologin was passed
     logMessage(std::string("-nologin = ") + (noLogin ? "true" : "false"));
     return noLogin;
+}
+
+static void qtMessageHandler(QtMsgType type,
+    const QMessageLogContext& context,
+    const QString& msg)
+{
+    QFile file("logs/GameDebug.log");
+
+    if (file.open(QIODevice::Append | QIODevice::Text)) {
+        QTextStream out(&file);
+
+        switch (type) {
+        case QtDebugMsg:    out << "[DEBUG] "; break;
+        case QtInfoMsg:     out << "[INFO] "; break;
+        case QtWarningMsg:  out << "[WARNING] "; break;
+        case QtCriticalMsg: out << "[CRITICAL] "; break;
+        case QtFatalMsg:    out << "[FATAL] "; break;
+        }
+
+        out << msg << '\n';
+    }
+}
+
+void InstallQtMessageHandler()
+{
+    qInstallMessageHandler(qtMessageHandler);
 }
