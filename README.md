@@ -1,9 +1,9 @@
 # OpenShores-IP-Patch
-A client modification for the 2018 (13n60) Shores of Hazeron MMO that adds an IP address input field, and redirects connections from the hardcoded *.hazeron.net to the entered IP address (or hostname). It also provides a client interface for easy future modding without the need of more ASM patches.
+A client modification for the 2018 (13n60) Shores of Hazeron MMO that adds an IP address input field, redirects connections from the hardcoded *.hazeron.net to the entered IP address (or hostname), provides a client interface for easy future modding without the need of more ASM patches, and more.
 
 ![IP input field pic](docs/screenshots/Shores_of_Hazeron_Patched_nuFGN6YpUe.png)
 
-The modification also stores the user-entered IP/host in the registry and restores it on client restart, just like with username and password for convenience.
+The modification also stores the user-entered IP/host in the registry and restores it on client restart, just like with username and password, for convenience.
 
 This patch also replaces the login screen background image with Background.png, so the user can easily customize it, along with the scrolling text.
 
