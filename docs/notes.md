@@ -17,6 +17,9 @@ Compared to the original ASM-only mod, this was extremely simple. The ports were
 I wanted to prove the concept that we can "steal" the game's existing imported and exported functions, which will help massively for future client modifications. If the .exe imports them, we can just do the IAT trick, if not but they're exported by the Au* DLLs, then we can use GetProcAddress on the mangled C++ symbol.
 
 #### Other
+ClientInterface.dll and its exports were added to the game's exe import table with CFF explorer's Import Adder, and the DLL was built with MSVC v140 linked against Qt 5.8.0 in VS2026. As of V0.0.8, the DLL build was switched from Debug to Release config for wider compatibility.
+CFF explorer was also used to add code caves to the game exe and AuLoginClient13.dll+AuUtil13.dll in order to fit our SetState hook instructions.
+
 Next, I wanted to port the Background.png replacement functionality to C++. This was extremely simple and just required the image object passed to SetState's context, and then we do `image->load(QString::fromLatin1("assets/Background.png"))`. Later, I also added `mainWindow->setWindowTitle("OpenShores");` and `mainWindow->setWindowIcon(QIcon("assets/OS_Icon.png"));` to this state (7) too.
 For debugging, every ProcessState() case had a stateLog() call added to it, just logging which state was received. Timestamps were added to the log using `std::chrono`, and relevant helper functions were organized in a ClientStateHelpers.cpp file.
 
