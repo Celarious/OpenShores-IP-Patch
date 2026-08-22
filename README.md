@@ -3,16 +3,22 @@ A client modification for the 2018 (13n60) Shores of Hazeron MMO that adds an IP
 
 ![IP input field pic](docs/screenshots/Shores_of_Hazeron_Patched_nuFGN6YpUe.png)
 
-The modification also stores the user-entered IP/host in the registry and restores it on client restart, just like with username and password, for convenience.
-
-This patch also replaces the login screen background image with Background.png, so the user can easily customize it, along with the scrolling text.
-
 # How to use
 The recommended way is to use the OpenShores launcher, which automatically downloads the correct SoH client and applies the IP patch:
 https://github.com/Norway174/OpenShores-Launcher/releases/
 
+# Features
+* Divides the game process into logical states through SetState() with hooks and events. Custom C++ logic is done depending on the active state
+* Adds a functional IP input field on the login screen
+* Stores the user's entered host in the registry and prefills the field on client restart for convenience
+* Replaces the login screen background with Background.png, allowing easy customizaton
+* Adds handling of the -nologin launch argument. If passed, it simulates a Login click and automatically logs the user in directly from the OpenShores launcher
+* Customizes the scrolling text on the login screen
+* Customizes the window icon and window title
+* Resolves the game's existing imported functions through their IATs and creates easy helpers for repurposing
+
 # Notes
-As of V0.0.5, all client modification functionality has been ported to a client interface DLL written in C++. ASM is only used to call SetState() of that DLL. 
+As of V0.0.5, all client modification functionality has been ported to a client interface DLL written in C++. ASM is only used to call SetState() of that DLL and pass relevant registers if necessary. 
 
 When calling Qt functions in custom DLLs, the ABI must match the original program, which requires the same exact Qt SDK as the original client (Qt 5.8.0), along with MSVC v140 (VS2015). Our custom DLLs are thus built with MSVC v140 linked against Qt5.8.0.
 
