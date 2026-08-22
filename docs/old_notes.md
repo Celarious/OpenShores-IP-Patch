@@ -1,3 +1,5 @@
+## Note: These notes were from before the C++ DLL migration, where all of the modification was done through ASM patching only. 
+
 # Client patching notes
 The three hostnames that needed replacement were:
 - login.hazeron.net
