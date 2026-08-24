@@ -30,3 +30,6 @@ See [notes](/docs/notes.md) for more details
 
 # Screenshot
  ![Full login screen](docs/screenshots/Shores_of_Hazeron_zYwUE6Y4hb.jpg)
+
+# Extra
+A 2016 version of this repo can be found at [https://github.com/Celarious/OpenShores-2016-ClientMod/](https://github.com/Celarious/OpenShores-2016-ClientMod/tree/main)
