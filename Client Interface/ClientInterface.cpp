@@ -27,3 +27,9 @@ int GetState() // Could be used in the future by other C++ or even Lua modules t
     std::lock_guard<std::mutex> lock(g_mutex);
     return g_state;
 }
+
+const QString& SetAuLogFilename()
+{
+    static const QString filename = QStringLiteral("logs/ClientInterface.log");
+    return filename;
+}

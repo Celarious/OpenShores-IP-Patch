@@ -34,11 +34,12 @@ void logMessage(const std::string& message)
     if (!initialized) { // So the log only wipes itself once at startup
         std::ofstream("logs/ClientInterface.log", std::ios::trunc).close(); // Wipes itself on every program start so it doesn't fill forever
         std::ofstream("logs/GameDebug.log", std::ios::trunc).close();
-        std::ofstream("logs/ClientInterface.log", std::ios::app) << "==== Logging started! ====\n\n";
+        std::ofstream("logs/ClientInterface.log", std::ios::app) << "==== Logging started! ====\n";
+        std::ofstream("logs/ClientInterface.log", std::ios::app) << "Note: AuGlobal::Log() calls have been redirected here, our added logs are marked with [CI]\n\n";
         initialized = true;
     }
     std::ofstream log("logs/ClientInterface.log", std::ios::app);
-    log << getTimestamp() << message << '\n';
+    log << "[CI]" << getTimestamp() << message << '\n';
 }
 
 void stateLog(int state) // Temporary log function for checking if the states are called

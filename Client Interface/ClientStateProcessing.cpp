@@ -28,9 +28,9 @@ void ProcessState(int state, void* context, void* aux)
         break;
 
     case 1: // Early startup, right after entry point
-        stateLog(state);
         Au::Initialize(); // Prepares the Au functions for our use, needed to avoid static initializaton timing issues
         InstallQtMessageHandler();
+        stateLog(state);
         break;
 
     case 2: // Qt+Au initialization after CRT setup

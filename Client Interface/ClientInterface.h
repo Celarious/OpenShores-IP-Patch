@@ -13,5 +13,8 @@
 #pragma once
 
 #include <windows.h>
+#include <QString>
 
 extern HMODULE hGame;
+extern "C" __declspec(dllexport)
+const QString& SetAuLogFilename();

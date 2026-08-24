@@ -8,6 +8,7 @@
 namespace Au {
     ReadEntryFn ReadEntry;
     WriteEntryFn WriteEntry;
+    Log_t Log = nullptr;
 
     void Initialize() // Ensures that the program has loaded before resolving addresses
     {
@@ -19,6 +20,11 @@ namespace Au {
         WriteEntry =
             *reinterpret_cast<WriteEntryFn*>(
                 reinterpret_cast<uintptr_t>(hGame) + 0x824318
-             );
+            );
+
+        Log =
+            *reinterpret_cast<Log_t*>(
+                reinterpret_cast<uintptr_t>(hGame) + 0x8240A0
+            );
     }
 }
